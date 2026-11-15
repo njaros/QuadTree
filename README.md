@@ -10,7 +10,11 @@ I don't want to re-instantiate a QuadTree at each loop, the quadtree can be upda
 Each empty node will have a score which determines how good it is to spawn an event inside (near players, not too far, not too close)
 
 # TODO
-- Implement a basic quadtree
-- Implement a parallel data structure to locate instantly any object in the quadtree
-- Implement the score of the empty nodes
-- Graphical view (just a grid to send to any UI)
+- [ ] Implement a basic quadtree
+	- [ ] implement an Insert for a group of points (one by one is expensive)
+- [ ] Implement a parallel data structure to locate instantly any object in the quadtree
+	- [x] implemented
+	- [ ]Test to do
+- [ ] Implement the score of the empty nodes
+- [x] Graphical view (just a grid to send to any UI)
+	- [x] Done as [][]byte or string structure. Is ok for now
