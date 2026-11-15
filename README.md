@@ -11,10 +11,12 @@ Each empty node will have a score which determines how good it is to spawn an ev
 
 # TODO
 - [ ] Implement a basic quadtree
+	- [x] logic + main structures anderstood and implemented
 	- [ ] implement an Insert for a group of points (one by one is expensive)
+	- [ ] implement main and usefull methods of a quadtree
 - [ ] Implement a parallel data structure to locate instantly any object in the quadtree
 	- [x] implemented
-	- [ ]Test to do
+	- [ ] Test to do
 - [ ] Implement the score of the empty nodes
 - [x] Graphical view (just a grid to send to any UI)
 	- [x] Done as [][]byte or string structure. Is ok for now
