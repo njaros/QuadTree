@@ -17,6 +17,7 @@ Each empty node will have a score which determines how good it is to spawn an ev
 - [ ] Implement a parallel data structure to locate instantly any object in the quadtree
 	- [x] implemented
 	- [ ] Test to do
+	- [ ] Update a Point in this structure will update the QuadTree (Implement Update(point T*) method)
 - [ ] Implement the score of the empty nodes
 - [x] Graphical view (just a grid to send to any UI)
 	- [x] Done as [][]byte or string structure. Is ok for now
