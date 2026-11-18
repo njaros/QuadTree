@@ -24,7 +24,7 @@ type QuadTree[T Point] struct {
 	Width          int
 	Height         int
 	Census         int
-	pointDirectory map[*T]*qtNode[T]
+	pointRegistry  map[*T]*qtNode[T]
 	root           *qtNode[T]
 }
 
@@ -64,7 +64,7 @@ func NewQuadTree[T Point](minX int, maxX int, minY int, maxY int) (*QuadTree[T],
 		Height:         maxY - minY + 1,
 		Width:          maxX - minX + 1,
 		Census:         0,
-		pointDirectory: make(map[*T]*qtNode[T]),
+		pointRegistry:  make(map[*T]*qtNode[T]),
 		root:           nil,
 	}, nil
 }
@@ -74,7 +74,6 @@ func newQtNode[T Point](minX int, maxX int, minY int, maxY int, parent *qtNode[T
 	if parent != nil {
 		depth = (*parent).depth + 1
 	}
-	// log.Printf("depth: %d\n", depth)
 	node := &qtNode[T]{
 		parent: parent,
 		depth:  depth,
@@ -97,26 +96,8 @@ func newQtNode[T Point](minX int, maxX int, minY int, maxY int, parent *qtNode[T
 
 // Create a pointer of Node in a pointer location of this one was nil.
 func getOrCreateQtNode[T Point](ptr **qtNode[T], minX int, maxX int, minY int, maxY int, parent *qtNode[T]) *qtNode[T] {
-	if *ptr == nil {
-		node := newQtNode(minX, maxX, minY, maxY, parent) 
-		*ptr = node
-		
-		// if parent != nil {
-		// 	var comeFrom string
-		// 	if (*parent).NE == node {
-		// 		comeFrom = "NE"
-		// 	}
-		// 	if (*parent).NW == node {
-		// 		comeFrom = "NW"
-		// 	}
-		// 	if (*parent).SE == node {
-		// 		comeFrom = "SE"
-		// 	}
-		// 	if (*parent).SW == node {
-		// 		comeFrom = "SW"
-		// 	}
-		// 	log.Printf("I come from %s\n", comeFrom)
-		// }
+	if *ptr == nil { 
+		*ptr = newQtNode(minX, maxX, minY, maxY, parent)
 	}
 	return *ptr
 }
@@ -126,6 +107,10 @@ func getOrCreateQtNode[T Point](ptr **qtNode[T], minX int, maxX int, minY int, m
 func (q *QuadTree[T]) InBounds(point *T) bool {
 	return (*point).X() >= q.WestPole && (*point).X() <= q.EastPole && (*point).Y() >= q.NorthPole && (*point).Y() <= q.SouthPole
 }
+
+// func (q *QuadTree[T]) KNearByDepth(point *T, k int, depth int) []*T {
+
+// }
 
 // Insert methods
 
@@ -263,26 +248,17 @@ func (n *qtNode[T]) groupChildrenSplit(ptsPtr *map[[2]int]*[]*T, dir *map[*T]*qt
 		}
 		n.Census += len(*pts)
 	}
-	if len(groupNW) > 2 {
-		log.Printf("NW group len: %d\n", len(groupNW))
-	} else {
-		array := [][2]int{}
-		for k := range groupNW {
-			array = append(array, k)
-		}
-		log.Printf("%v\n", array)
-	}
 	if len(groupNE) > 0 {
 		getOrCreateQtNode(&(n.NE), n.X+1, n.MaxX, n.MinY, n.Y, n).groupAdd(&groupNE, dir)
 	}
 	if len(groupNW) > 0 {
-		getOrCreateQtNode(&(n.NW), n.X+1, n.MaxX, n.MinY, n.Y, n).groupAdd(&groupNW, dir)
+		getOrCreateQtNode(&(n.NW), n.MinX, n.X, n.MinY, n.Y, n).groupAdd(&groupNW, dir)
 	}
 	if len(groupSE) > 0 {
-		getOrCreateQtNode(&(n.SE), n.X+1, n.MaxX, n.MinY, n.Y, n).groupAdd(&groupSE, dir)
+		getOrCreateQtNode(&(n.SE), n.X+1, n.MaxX, n.Y+1, n.MaxY, n).groupAdd(&groupSE, dir)
 	}
 	if len(groupSW) > 0 {
-		getOrCreateQtNode(&(n.SW), n.X+1, n.MaxX, n.MinY, n.Y, n).groupAdd(&groupSW, dir)
+		getOrCreateQtNode(&(n.SW), n.MinX, n.X, n.Y+1, n.MaxY, n).groupAdd(&groupSW, dir)
 	}
 }
 
