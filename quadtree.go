@@ -121,7 +121,7 @@ func (q *QuadTree[T]) Add(point *T) error {
 		return OutOfBoundsError
 	}
 	q.Census += 1
-	getOrCreateQtNode(&q.root, q.WestPole, q.EastPole, q.NorthPole, q.SouthPole, nil).add(point, &q.pointDirectory)
+	getOrCreateQtNode(&q.root, q.WestPole, q.EastPole, q.NorthPole, q.SouthPole, nil).add(point, &q.pointRegistry)
 	return nil
 }
 
@@ -183,7 +183,7 @@ func (q *QuadTree[T]) GroupAdd(pts []*T) error {
 	}
 	q.Census += len(pts)
 
-	getOrCreateQtNode(&q.root, q.WestPole, q.EastPole, q.NorthPole, q.SouthPole, nil).groupAdd(&pointMap, &q.pointDirectory)
+	getOrCreateQtNode(&q.root, q.WestPole, q.EastPole, q.NorthPole, q.SouthPole, nil).groupAdd(&pointMap, &q.pointRegistry)
 	return nil
 }
 
