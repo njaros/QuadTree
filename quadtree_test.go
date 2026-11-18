@@ -2,6 +2,7 @@ package quadtree
 
 import (
 	"testing"
+	"time"
 )
 
 type TestPoint struct {
@@ -19,26 +20,26 @@ func (p TestPoint) Y() int {
 
 // Some fixtures
 
-func getTestTree(t *testing.T) *QuadTree[TestPoint] {
-	tree, err := NewQuadTree[TestPoint](-1000, 1000, -1000, 1000)
-	if err != nil {
-		t.Errorf("Should have no error, got %s", err.Error())
-	}
+// func getTestTree(t *testing.T) *QuadTree[TestPoint] {
+// 	tree, err := NewQuadTree[TestPoint](-1000, 1000, -1000, 1000)
+// 	if err != nil {
+// 		t.Errorf("Should have no error, got %s", err.Error())
+// 	}
 
-	tree.Add(&TestPoint{50, 50})
-	tree.Add(&TestPoint{0, 0})
-	tree.Add(&TestPoint{50, -50})
-	tree.Add(&TestPoint{-50, 50})
-	tree.Add(&TestPoint{-50, -50})
-	tree.Add(&TestPoint{500, 150})
-	tree.Add(&TestPoint{500, -50})
-	tree.Add(&TestPoint{312, -7})
-	tree.Add(&TestPoint{1, 2})
-	tree.Add(&TestPoint{3, 4})
-	tree.Add(&TestPoint{-1, -500})
+// 	tree.Add(&TestPoint{50, 50})
+// 	tree.Add(&TestPoint{0, 0})
+// 	tree.Add(&TestPoint{50, -50})
+// 	tree.Add(&TestPoint{-50, 50})
+// 	tree.Add(&TestPoint{-50, -50})
+// 	tree.Add(&TestPoint{500, 150})
+// 	tree.Add(&TestPoint{500, -50})
+// 	tree.Add(&TestPoint{312, -7})
+// 	tree.Add(&TestPoint{1, 2})
+// 	tree.Add(&TestPoint{3, 4})
+// 	tree.Add(&TestPoint{-1, -500})
 
-	return tree
-}
+// 	return tree
+// }
 
 func TestNewQuadTree(t *testing.T) {
 	tree, err := NewQuadTree[TestPoint](-101, 102, -103, 104)
@@ -227,4 +228,20 @@ func TestQuadTreeAdd(t *testing.T) {
 	if expected != tree.String() {
 		t.Errorf("expected tree: %s, have %s, len expected: %d len found: %d", expected, tree.String(), len(expected), len(tree.String()))
 	}
+}
+
+func TestQuadTreeGroupAdd(t *testing.T) {
+	chrono := time.Now()
+	tree, _ := NewQuadTree[TestPoint](0, 1000, 0, 1000)
+	points := make([]*TestPoint, 0, 1000000)
+	for i := range(1000) {
+		for j := range(1000) {
+			points = append(points, &TestPoint{i, j})
+		}
+	}
+	t.Logf("create %d points duration: %f seconds", len(points), time.Since(chrono).Seconds())
+
+	chrono = time.Now()
+	tree.GroupAdd(points)
+	t.Logf("GroupAdd duration: %f seconds", time.Since(chrono).Seconds())
 }
